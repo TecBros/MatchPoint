@@ -1,4 +1,4 @@
-//Imports
+// Importing necessary libraries and components
 import React, { useState, useEffect } from 'react';
 import { Text, View, Button, TouchableOpacity, Modal, Image } from 'react-native';
 import {
@@ -13,39 +13,36 @@ import {
 } from 'firebase/firestore';
 import { getDistance } from 'geolib';
 
+// Importing screens for the application
 import Level1Stadium from '../../assets/images/Level1Stadium.png';
 import Level2Stadium from '../../assets/images/Level2Stadium.png';
 import Level3Stadium from '../../assets/images/Level3Stadium.png';
 import Level4Stadium from '../../assets/images/Level4Stadium.png';
-
-
-//Import Screens
 import { FIREBASE_DB } from '../../FirebaseConfig';
-import { useAuth } from '../AuthContext'; // Adjust the path to your AuthContext
+import { useAuth } from '../AuthContext'; 
 import styles from '../Styles';
+
 <Image source={Level1Stadium} style={styles.stadiumImage} />
 
 
+// Home component to manage user interactions and state
 const Home = () => {
-// Define and initialize state variables 
+  // State variables for user data and application status
   const { currentUser } = useAuth();
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const [isReady, setIsReady] = useState<number | null>(null);
   const [readyUsers, setReadyUsers] = useState<string[]>([]);
   const [chatStartedWith, setChatStartedWith] = useState<string | null>(null);
-  const [userLevel, setUserLevel] = useState<string>(''); // Zustand für den Benutzer-Level
-  const [showOverlay, setShowOverlay] = useState(false); // State to control overlay visibility
+  const [userLevel, setUserLevel] = useState<string>(''); 
+  const [showOverlay, setShowOverlay] = useState(false); 
 
-
+  // Effect to fetch and update user data 
   useEffect(() => {
     updateLevel();
     fetchUserData();
   }, [currentUser]);
 
-  useEffect(() => {
-    fetchUserData();
-  }, []); // Leeres Abhängigkeitsarray, um sicherzustellen, dass dieser Effekt nur einmal beim Laden der Seite ausgeführt wird
-  
+  // Function to fetch user data from Firestore
   const fetchUserData = async () => {
     if (currentUser) {
       const userDocRef = doc(FIREBASE_DB, 'users', currentUser.uid);
@@ -55,7 +52,6 @@ const Home = () => {
         setCurrentUsername(userDocSnap.data().username);
         const points = userDocSnap.data().points;
   
-        // Berechne das Benutzerlevel basierend auf den Punkten
         let userLevel = '';
   
         if (points >= 0 && points < 250) {
@@ -69,15 +65,13 @@ const Home = () => {
         }
   
         setUserLevel(userLevel);
-  
-        // Konsolenausgabe des Benutzerlevels
       } else {
         console.log('No such document!');
       }
     }
   };
   
-
+  // Function to update user level based on points
   const updateLevel = () => {
     if (currentUser && isReady !== null) {
       const userDocRef = doc(FIREBASE_DB, 'users', currentUser.uid);
@@ -98,8 +92,6 @@ const Home = () => {
             }
   
             setUserLevel(userLevel);
-  
-            // Konsolenausgabe des Benutzerlevels hier platzieren
             console.log('User Level:', userLevel);
           }
         })
@@ -109,18 +101,21 @@ const Home = () => {
     }
   };
   
+   // Mapping user levels to corresponding stadium images
   const images: { [key: string]: any } = {
     'Level 1': Level1Stadium,
     'Level 2': Level2Stadium,
     'Level 3': Level3Stadium,
     'Level 4': Level4Stadium,
   };
+
+  // Function to render the correct stadium image based on user level
   const renderStadium = () => {
     const StadiumImage = images[userLevel];
     return StadiumImage ? <Image source={StadiumImage} style={styles.stadiumImage} /> : null;
   };
   
-
+  // Function to handle user button click to find or cancel finding an opponent
   const handleButtonClick = async () => {
     if (currentUser) {
       const newStatus = isReady === 1 ? 0 : 1;
@@ -135,6 +130,7 @@ const Home = () => {
     }
   };
 
+  // Function to check if a chat already exists between two users
   const checkIfChatExists = async (opponentName: string) => {
     const q = query(
       collection(FIREBASE_DB, 'chats'),
@@ -142,8 +138,10 @@ const Home = () => {
       where('user2', 'in', [currentUsername, opponentName])
     );
     const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty; // Returns true if a chat exists
+    return !querySnapshot.empty; 
   };
+
+  // Function to fetch users ready to play and sort them based on criteria
   const fetchReadyUsers = async () => {
     const userDocRef = doc(FIREBASE_DB, 'users', currentUser.uid);
     const userDocSnap = await getDoc(userDocRef);
@@ -182,6 +180,7 @@ const Home = () => {
     setReadyUsers(sortedUsernames);
   };
 
+  // Function to render the play button for the first ready user
   const renderPlayButton = (username: string) => {
     return (
       <TouchableOpacity
@@ -194,8 +193,7 @@ const Home = () => {
     );
   };
 
- 
-
+  // Function to handle the click on an opponent and start a chat
   const handleOpponentClick = async (opponentName: string) => {
     if (currentUser && currentUsername) {
       const chatData = {
@@ -204,19 +202,21 @@ const Home = () => {
       };
       await addDoc(collection(FIREBASE_DB, 'chats'), chatData);
       console.log('Chat started with:', opponentName);
-      setChatStartedWith(opponentName); // Set the state to indicate that a chat has started
-      setShowOverlay(true); // Show the overlay
+      setChatStartedWith(opponentName); 
+      setShowOverlay(true); 
     }
   };
+
+  // Function to close the overlay and reset user's ready status
   const closeOverlay = async () => {
-    setShowOverlay(false); // Hide the overlay
+    setShowOverlay(false); 
 
     // Reset 'isReady' state to 0 when overlay is closed
     if (currentUser) {
       const userDocRef = doc(FIREBASE_DB, 'users', currentUser.uid);
       await updateDoc(userDocRef, { isReady: 0 });
       setIsReady(0);
-      setReadyUsers([]); // Reset ready users list
+      setReadyUsers([]); 
     }
   };
 
@@ -240,7 +240,7 @@ const Home = () => {
         </View>
 
         {isReady === 1 && readyUsers.length > 0 && (
-          <View style={styles.Homebutton}>
+          <View style={styles.OpponentButton}>
             {renderPlayButton(readyUsers[0])}
           </View>
         )}

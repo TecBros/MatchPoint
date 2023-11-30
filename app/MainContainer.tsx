@@ -1,4 +1,4 @@
-//Imports
+// Importing necessary libraries and components
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -8,7 +8,7 @@ import { TouchableOpacity } from 'react-native';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-// Import screens 
+// Importing screens for the application
 import Login from './Authentification/login';
 import Register from './Authentification/Register';
 import Home from './screens/Home';
@@ -19,10 +19,11 @@ import Chat from './screens/Chat';
 import ChatInterface from './screens/ChatInterface';
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 
+// Initializing Stack and Tab navigators
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
+// Type definition for navigation props
 type RootStackParamList = {
   Home: undefined;
   Account: undefined;
@@ -30,10 +31,11 @@ type RootStackParamList = {
   ChatInterface: { player1: string, player2: string };
 };
 
-
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
+type ChatStackScreenProps = NativeStackNavigationProp<RootStackParamList, 'ChatInterface'>;
 
-// Generic StackScreen component
+
+// Home stack screen component with navigation props
 function HomeStackScreen({ navigation }: { navigation: NavigationProp }) {
   return (
     <Stack.Navigator>
@@ -59,6 +61,7 @@ function HomeStackScreen({ navigation }: { navigation: NavigationProp }) {
   );
 }
 
+// Ranking stack screen component with navigation props
 function RankingStackScreen({ navigation }: { navigation: NavigationProp }) {
   return (
     <Stack.Navigator>
@@ -84,8 +87,8 @@ function RankingStackScreen({ navigation }: { navigation: NavigationProp }) {
   );
 }
 
-type ChatStackScreenProps = NativeStackNavigationProp<RootStackParamList, 'ChatInterface'>;
 
+// Chat stack screen component with navigation props
 function ChatStackScreen({ navigation }: { navigation: ChatStackScreenProps }) {
   return (
     <Stack.Navigator>
@@ -116,7 +119,7 @@ function ChatStackScreen({ navigation }: { navigation: ChatStackScreenProps }) {
   );
 }
 
-// Layout for authenticated users
+// Component for the layout when the user is authenticated
 function InsideComponent() {
   return (
     <Tab.Navigator initialRouteName="Home">
@@ -156,12 +159,11 @@ function InsideComponent() {
 
 // Main App component integrating Firebase authentication
 export default function App() {
-  // Subscribing to authentication state changes
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, setUser);
-    return unsubscribe; // Cleanup the subscription on unmount
+    return unsubscribe; 
   }, []);
 
   return (

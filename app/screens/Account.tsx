@@ -1,17 +1,19 @@
-//Imports
+// Importing necessary libraries and components
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-//Import Screens
+// Importing screens for the application
 import { doc, getDoc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig';
 import { NavigationProp } from '@react-navigation/native';
 import styles from '../Styles';
 
+// Interface for RouterProps
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
+// Interface for User data
 interface User {
   email: string | null;
   username: string | null;
@@ -21,6 +23,7 @@ interface User {
   age: number | null;
 }
 
+// Account component
 const Account = ({ }: RouterProps) => {
   const [user, setUser] = useState<User | null>(null);
 
@@ -28,13 +31,12 @@ const Account = ({ }: RouterProps) => {
     const currentUser = FIREBASE_AUTH.currentUser;
 
     if (currentUser) {
-      // Hier zusätzliche Informationen aus Firebase Firestore abrufen
       fetchUserData(currentUser.uid);
     }
   }, []);
 
+  // Function to fetch user data from Firestore
   const fetchUserData = async (uid: string) => {
-    // Beispiel: Annahme, dass Benutzerdaten in einer Firestore-Sammlung "users" gespeichert sind
     const userDocRef = doc(FIREBASE_DB, 'users', uid);
     const userDocSnap = await getDoc(userDocRef);
 
@@ -51,6 +53,7 @@ const Account = ({ }: RouterProps) => {
     }
   };
 
+  // Function to handle user logout
   const handleLogout = () => {
     FIREBASE_AUTH.signOut();
   };
@@ -73,10 +76,6 @@ const Account = ({ }: RouterProps) => {
         <View style={styles.row}>
           <Text style={styles.label}>Skill Level:</Text>
           <Text style={styles.value}>{user?.skillLevel}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Club:</Text>
-          <Text style={styles.value}>{user?.club}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Age:</Text>

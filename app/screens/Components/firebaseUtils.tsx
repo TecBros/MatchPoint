@@ -1,7 +1,6 @@
-//Import Screens
+// Importing screens for the application
 import { doc, getDoc, onSnapshot, collection, query, where, updateDoc, getFirestore } from 'firebase/firestore';
 import { FIREBASE_DB } from '../../../FirebaseConfig';
-
 
 // Function to get a document snapshot from a collection
 export const getDocumentSnapshot = async (collectionName: string, docId: string) => {

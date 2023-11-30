@@ -25,7 +25,7 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20, // Anpassen, um den gewünschten Abstand nach oben zu erhalten
+    marginTop: 20, 
   },
 
   // Authentication screen container and title styles
@@ -140,7 +140,7 @@ export default StyleSheet.create({
     padding: width * 0.04,
     borderRadius: width * 0.025,
     borderColor: colors.Black,
-    borderWidth: width * 0.00038,
+    borderWidth: width * 0.0,
     marginVertical: width * 0.025, 
     marginHorizontal: width * 0.1, 
     shadowColor: colors.Black,
@@ -263,11 +263,11 @@ export default StyleSheet.create({
   }, 
 
   stadiumImage: {
-    width: width * 0.6, // Breite anpassen
-    height: width * 0.6, // Höhe anpassen
+    width: width * 0.6, 
+    height: width * 0.6, 
     resizeMode: 'cover',
-    justifyContent: 'center', // Horizontal zentrieren
-    alignItems: 'center', // Vertikal zentrieren
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   
   // Overlay styles for additional features
@@ -298,8 +298,13 @@ export default StyleSheet.create({
     backgroundColor: colors.LightGreen,
   },
   Homebutton: {
-    marginTop: width * 0.0, 
-    marginBottom: width * 0.5,
+    marginTop: width * 0, 
+    marginBottom: width * 0.1,
+    marginHorizontal: width * 0.2, 
+  },
+  OpponentButton: {
+    marginTop: width * 0,
+    marginBottom: width * 0.2, 
     marginHorizontal: width * 0.2, 
   },
   HomeButtons: {
@@ -337,16 +342,5 @@ export default StyleSheet.create({
   },
   RankHeaderText: {
     fontWeight: 'bold',
-    // Rest of your text styles like fontSize, color, etc.
-  },
-  LevelText: {
-    fontSize: width * 0.05,
-    color: colors.Black,
-    fontWeight: 'bold',
-    backgroundColor: 'lightgray', // Hintergrundfarbe für den Text
-    padding: 30, // Abstand um den Text herum
-    borderRadius: 5, // Runde Ecken für den Hintergrund
-    alignSelf: 'center', // Zentrieren Sie den Text horizontal
-    marginTop: 10, // Abstand von oben
   },
 });

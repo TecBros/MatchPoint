@@ -1,4 +1,4 @@
-// Imports
+// Importing necessary libraries and components
 import {
   collection,
   query,
@@ -7,7 +7,7 @@ import {
   runTransaction,
 } from 'firebase/firestore';
 
-//Import Screens
+// Importing screens for the application
 import { FIREBASE_DB } from '../../../FirebaseConfig';
 
 interface Match {

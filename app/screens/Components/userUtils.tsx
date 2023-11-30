@@ -1,4 +1,7 @@
+// Importing necessary libraries and components
 import { doc } from 'firebase/firestore';
+
+// Importing screens for the application
 import { FIREBASE_DB } from '../../../FirebaseConfig';
 import { getDocumentSnapshot, updateDocument, listenForCollectionChanges } from './firebaseUtils';
 

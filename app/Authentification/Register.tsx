@@ -94,7 +94,7 @@ const Registration = () => {
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalContent}>
                             <Picker selectedValue={age} onValueChange={(itemValue) => { setAge(itemValue); setAgePickerVisible(false); }} style={styles.pickerStyle} >
-                                {[...Array(99).keys()].map((value) => <Picker.Item key={value} label={(value + 12).toString()} value={(value + 1).toString()} />)}
+                                {[...Array(99).keys()].map((value) => <Picker.Item key={value} label={(value + 1).toString()} value={(value + 1).toString()} />)}
                             </Picker>
                         </View>
                     </View>

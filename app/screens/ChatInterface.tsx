@@ -1,3 +1,4 @@
+// Importing necessary libraries and components
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -7,13 +8,10 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { Overlay } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Ionicons } from '@expo/vector-icons'; // Importieren Sie das gewünschte Icon
 
-//Import Screens
+// Importing screens for the application
 import { useAuth } from '../AuthContext';
 import { FIREBASE_DB } from '../../FirebaseConfig';
 import {
@@ -27,10 +25,10 @@ import {
   onSnapshot,
   orderBy,
 } from 'firebase/firestore';
-
 import styles from '../Styles';
 import isValidTennisScore from './Components/TennisScore'; 
 
+// Interface for chat messages
 interface Chat {
   id: string;
   user1: string;
@@ -38,9 +36,9 @@ interface Chat {
   lastMessage?: string;
 }
 
+// ChatPage component definition
 const ChatPage: React.FC = () => {
-  // Define and initialize state variables
-
+  // State variables for chat functionality
   const { currentUser } = useAuth();
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const navigation = useNavigation();
@@ -52,10 +50,12 @@ const ChatPage: React.FC = () => {
   const [currentUserScore, setCurrentUserScore] = useState('');
   const [receiverScore, setReceiverScore] = useState('');
 
+  // Function to toggle the visibility of the score overlay
   const toggleOverlay = () => {
     setIsOverlayVisible(!isOverlayVisible);
   };
 
+  // Function to handle the submission of a tennis match score
   const handlePlayNow = async () => {
     if (
       currentUser &&
@@ -75,7 +75,7 @@ const ChatPage: React.FC = () => {
       const matchData = {
         sender: currentUsername,
         receiver:
-          currentUsername === player1 ? player2 : player1, // Assuming the opponent is the other player's profile
+          currentUsername === player1 ? player2 : player1,
         senderScore: Number(currentUserScore),
         receiverScore: Number(receiverScore),
         createdAt: Timestamp.now(), 
@@ -97,6 +97,7 @@ const ChatPage: React.FC = () => {
     }
   };
 
+  // Function to fetch current user data from Firestore
   useEffect(() => {
     const fetchUserData = async () => {
       if (currentUser) {
@@ -124,7 +125,6 @@ const ChatPage: React.FC = () => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       interface Message {
         id: string;
-        // Add other properties with their respective types
       }
 
       // Specify the type of fetchedMessages as an array of Message interface
@@ -138,6 +138,7 @@ const ChatPage: React.FC = () => {
     return () => unsubscribe(); // Cleanup function
   }, [player1, player2]);
 
+  // Function to handle sending a chat message
   const handleSendMessage = async () => {
     if (inputMessage.trim() !== '' && currentUsername) {
       const receiverUsername =
@@ -161,6 +162,7 @@ const ChatPage: React.FC = () => {
     }
   };
 
+  // Function to determine if a message is from the current user
   const isMessageFromCurrentUser = (message: any) => {
     return message.sender === currentUsername;
   };

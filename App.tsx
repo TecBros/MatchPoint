@@ -1,14 +1,16 @@
-import React, { } from 'react';
-import MainContainer from './app/MainContainer';
-import { AuthProvider } from './app/AuthContext';
+// Importing React and necessary components from the project
+import React from 'react';  // React import for JSX usage
+import MainContainer from './app/MainContainer';  // MainContainer component, typically handles main app layout
+import { AuthProvider } from './app/AuthContext';  // AuthProvider component, provides authentication context to the app
 
-
-function App(){
-  return(
+// The App component acts as the root component of the application
+function App() {
+  return (
+    // Wrapping MainContainer in AuthProvider to provide authentication context to all child components
     <AuthProvider>
-    <MainContainer/>
+      <MainContainer/>
     </AuthProvider>
   );
 }
 
-export default App;
+export default App;  // Exporting App component for use in other parts of the application

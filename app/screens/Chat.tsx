@@ -1,25 +1,29 @@
+// Importing necessary libraries and components
 import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
-// Import Screens
+// Importing screens for the application
 import { FIREBASE_DB } from '../../FirebaseConfig';
 import { useAuth } from '../AuthContext';
 import styles from '../Styles';
 
+// Interface definition for Chat
 interface Chat {
   id: string;
   user1: string;
   user2: string;
 }
 
+// ChatOverview component
 const ChatOverview: React.FC = () => {
   const { currentUser } = useAuth();
   const navigation = useNavigation();
   const [chats, setChats] = useState<Chat[]>([]);
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
 
+  // Fetch user data on component mount or currentUser change
   useEffect(() => {
     const fetchUserData = async () => {
       if (currentUser) {
@@ -34,6 +38,7 @@ const ChatOverview: React.FC = () => {
     fetchUserData();
   }, [currentUser]);
 
+  // Fetch chats involving the current user
   useEffect(() => {
     const fetchChats = async () => {
       if (currentUsername) {
@@ -68,6 +73,7 @@ const ChatOverview: React.FC = () => {
     fetchChats();
   }, [currentUsername]);
 
+  // Navigation parameter list for ChatStack
   type ChatStackParamList = {
     Chat: undefined;
     Account: undefined;
@@ -77,6 +83,7 @@ const ChatOverview: React.FC = () => {
     };
   };
 
+  // Function to handle pressing a chat item
   const handleChatPress = (chat: Chat) => {
     (navigation as any).navigate('ChatInterface', {
       player1: chat.user1,
@@ -86,6 +93,7 @@ const ChatOverview: React.FC = () => {
 
   return (
     <View style={styles.chatContainer}>
+      <ScrollView>
       {chats.length > 0 ? (
         chats.map((chat) => (
           <TouchableOpacity
@@ -101,6 +109,7 @@ const ChatOverview: React.FC = () => {
       ) : (
         <Text style={styles.noChatsText}>No chats available.</Text>
       )}
+      </ScrollView>
     </View>
   );
 };

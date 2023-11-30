@@ -1,4 +1,4 @@
-//Imports
+// Importing necessary libraries and components
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, TextInput, Alert } from 'react-native';
 import {
@@ -11,9 +11,9 @@ import {
   updateDoc,
   runTransaction,
 } from 'firebase/firestore';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
-//Import Screens
+// Importing screens for the application
 import { FIREBASE_DB } from '../../FirebaseConfig'; 
 import { useAuth } from '../AuthContext';
 import styles from '../Styles'; 
@@ -21,6 +21,7 @@ import { Overlay } from 'react-native-elements';
 import isValidTennisScore from './Components/TennisScore'; 
 import { updatePlayerScores } from './Components/PlayerScores'; 
 
+// Define the Match interface
 interface Match {
   id: string;
   receiver: string;
@@ -30,9 +31,9 @@ interface Match {
   receiverScore: number; 
 }
 
-// Accessing the current user from the authentication context
+// Notifications component for handling match interactions
 const Notifications: React.FC = () => {
-  // Define and initialize state variables 
+  // State declarations
   const { currentUser } = useAuth(); 
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const route = useRoute();
@@ -42,20 +43,19 @@ const Notifications: React.FC = () => {
   const [matches, setMatches] = useState<Match[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
 
+  // Function to handle accepting a match
   const handleAcceptMatch = async (match: Match) => {
-    await acceptMatch(match); // Accept the match
-    await updatePlayerScores(match.sender, match.receiver, match); // Update player scores
+    await acceptMatch(match); 
+    await updatePlayerScores(match.sender, match.receiver, match); 
   };
 
   const acceptMatch = async (match: Match) => {
-    // Update the status of the match to 1 to mark it as accepted
     const matchRef = doc(FIREBASE_DB, 'matches', match.id);
     try {
       await updateDoc(matchRef, {
         status: 1,
       });
       console.log('Match accepted');
-      // Update the match list or perform other actions
     } catch (error) {
       console.error('Error updating the match:', error);
     }
@@ -71,7 +71,6 @@ const Notifications: React.FC = () => {
 
   const changeResult = async () => {
     if (!selectedMatch) return;
-
     const newSenderScore = parseInt(currentUserScore);
     const newReceiverScore = parseInt(receiverScore);
     if (isNaN(newSenderScore) || isNaN(newReceiverScore)) {
@@ -86,9 +85,7 @@ const Notifications: React.FC = () => {
       );
       return;
     }
-
     const matchRef = doc(FIREBASE_DB, 'matches', selectedMatch.id);
-
     try {
       await updateDoc(matchRef, {
         receiver: selectedMatch.sender,
@@ -115,7 +112,6 @@ const Notifications: React.FC = () => {
         }
       }
     };
-
     fetchUserData();
   }, [currentUser]);
 
@@ -128,24 +124,23 @@ const Notifications: React.FC = () => {
           where('receiver', '==', currentUsername),
           where('status', '==', 0)
         );
-
         const querySnapshot = await getDocs(matchesQuery);
         const fetchedMatches = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data() as Omit<Match, 'id'> // Omitting the 'id' field from doc.data()
         }));
-
         setMatches(fetchedMatches);
       }
     };
-
     fetchMatches();
   }, [currentUsername]); // Added dependency on currentUsername
 
+  // Function to toggle the overlay's visibility
   const toggleOverlay = () => {
     setIsOverlayVisible(!isOverlayVisible);
   };
 
+  // Function to handle the selection of a match
   const handleMatchPress = (match: Match) => {
     setSelectedMatch(match);
     setCurrentUserScore(match.senderScore?.toString() ?? '');
